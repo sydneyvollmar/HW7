@@ -53,9 +53,43 @@ def getGradeHistogram(url):
         url -- a uniform resource locator - address for a web page
     """
 
-    pass
+    html = urlopen(url).read()
+    soup = BeautifulSoup(html, "html.parser")
 
-getSumSpans("https://www.nytimes.com/")
+    dictGrades = {90: 0, 80: 0, 70: 0, 60: 0, 50: 0, 40: 0, 30: 0, 20: 0, 10: 0, 0: 0}
+    spans = soup.find_all('span')
+
+    for span in spans:
+        nums = re.findall('([0-9]+)', span.text)
+        for num in nums:
+            grade = int(num)
+            if grade >= 90 and grade < 100:
+                dictGrades[90] += 1
+            elif grade >= 80:
+                dictGrades[80] += 1
+            elif grade >= 70:
+                dictGrades[70] += 1
+            elif grade >= 60:
+                dictGrades[60] += 1
+            elif grade >= 50:
+                dictGrades[50] += 1
+            elif grade >= 40:
+                dictGrades[40] += 1
+            elif grade >= 30:
+                dictGrades[30] += 1
+            elif grade >= 20:
+                dictGrades[20] += 1
+            elif grade >= 10:
+                dictGrades[10] += 1
+            elif grade >= 0:
+                dictGrades[0] += 1
+
+    lstGrades = []
+    for elem in dictGrades:
+        lstGrades.append((elem, dictGrades[elem]))
+
+    return lstGrades
+
 
 class TestHW7(unittest.TestCase):
 
@@ -71,8 +105,8 @@ class TestHW7(unittest.TestCase):
     def test_followLinks2(self):
         self.assertEqual(followLinks("http://py4e-data.dr-chuck.net/known_by_Charlie.html",18,7), "Shannah")
 
-    #def test_getGradeHistogram(self):
-    #    self.assertEqual(getGradeHistogram("http://py4e-data.dr-chuck.net/comments_42.html"), [(90, 4), (80, 4), (70, 7), (60, 7), (50, 6), (40, 3), (30, 5), (20, 4), (10, 6), (0, 4)])
+    def test_getGradeHistogram(self):
+        self.assertEqual(getGradeHistogram("http://py4e-data.dr-chuck.net/comments_42.html"), [(90, 4), (80, 4), (70, 7), (60, 7), (50, 6), (40, 3), (30, 5), (20, 4), (10, 6), (0, 4)])
 
 
 unittest.main(verbosity=2)
