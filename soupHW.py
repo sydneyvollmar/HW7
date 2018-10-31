@@ -5,7 +5,6 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import ssl
 import unittest
-import requests
 import re
 
 def getSumSpans(url):
@@ -14,8 +13,8 @@ def getSumSpans(url):
         url -- a uniform resource locator - address for a web page
 
     """
-    r = requests.get(url)
-    soup = BeautifulSoup(r.text, "lxml")
+    html = urlopen(url).read()
+    soup = BeautifulSoup(html, "html.parser")
 
     spans = soup.find_all('span')
 
