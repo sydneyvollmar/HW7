@@ -5,6 +5,8 @@ from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import ssl
 import unittest
+import requests
+import re
 
 def getSumSpans(url):
     """ return a sum of all of the text values in the span tags at the passed url
@@ -12,8 +14,19 @@ def getSumSpans(url):
         url -- a uniform resource locator - address for a web page
 
     """
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, "lxml")
 
-    pass
+    spans = soup.find_all('span')
+
+    total = 0
+    for span in spans:
+        nums = re.findall('([0-9]+)', span.text)
+        for num in nums:
+            total += int(num)
+
+    return total
+
 
 def followLinks(url, numAnchor, numTimes):
     """ Repeat for numTimes. Find the url at numAnchor position (the first link is at position 1) at
@@ -34,6 +47,7 @@ def getGradeHistogram(url):
 
     pass
 
+getSumSpans("https://www.nytimes.com/")
 
 class TestHW7(unittest.TestCase):
 
